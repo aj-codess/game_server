@@ -9,6 +9,20 @@
 
 using namespace std;
 
+class override{
+    private:
+    server_handler server;
+
+    public:
+    override(boost::asio::io_context& context,domain_dcl init)
+    :server(context,init){
+
+        cout<<"server handler called "<<endl;
+
+    };
+};
+
+
 int main(){
 
     boost::asio::io_context context;
@@ -18,9 +32,7 @@ int main(){
         "5000"
     };
 
-    server_handler server;
-
-    server(context,domain);
+    override server_init(context,domain);
 
     return 0;
 }

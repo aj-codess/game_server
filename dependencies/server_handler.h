@@ -12,8 +12,8 @@ using namespace std;
 
 class server_handler{
     public:
-    server(boost::asio::io_context& context,domain_dcl init)
-    :ioc(context),add_resolver(context),domain(init) {
+    server_handler(boost::asio::io_context& context,domain_dcl init)
+    :ioc(context),addr_resolver(context),domain(init) {
 
         cout<<"Server Initialised"<<endl;
 
