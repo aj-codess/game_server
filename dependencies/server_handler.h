@@ -5,8 +5,12 @@
 
 #include <boost/asio.hpp>
 #include <boost/beast.hpp>
+#include <boost/asio/spawn.hpp>
+#include <boost/beast/websocket.hpp>
+#include <boost/beast/core.hpp>
 
 #include <global_dcl.h>
+#include <tcp_handler.h>
 
 using namespace std;
 
@@ -23,6 +27,7 @@ class server_handler{
     bool isRunning;
 
     private:
+    tcp_handler handler;
     short cycle_limit=10;
     short endp_cycle;
     domain_dcl domain;
@@ -46,7 +51,6 @@ void server_handler::endP_maker(){
         this->endpoint=*resolved_endpoints.begin();
 
         this->acceptor_init();
-
 
 
     } catch(const std::exception& e){
@@ -100,7 +104,7 @@ void server_handler::listener_init(){
 
         if(!ec){
 
-            this->isrunning=true;
+            this->isRunning=true;
 
             if(socket->is_open()){
 
@@ -108,7 +112,7 @@ void server_handler::listener_init(){
 
                 boost::asio::spawn(connection_acceptor.get_executor(),[&](boost::asio::yield_context yield) {
         
-                    this->commu_handler(socket, yield);
+                    this->commu_handler_init(socket, yield);
 
                 });
 
@@ -130,6 +134,35 @@ void server_handler::listener_init(){
 
 void server_handler::commu_handler_init(std::shared_ptr<boost::asio::ip::tcp::socket> socket,boost::asio::yield_context yield){
 
-    
+    boost::beast::tcp_stream stream_socket(std::move(*socket));
 
-};
+    for(;;){
+        bool client_is_off;
+
+        try{
+
+            boost::beast::flat_buffer buffer;
+
+            boost::beast::http::request<boost::beast::http::string_body> req;
+
+            boost::beast::http::response<boost::beast::http::string_body> res;
+
+            boost::beast::http::async_read(stream_socket,buffer,req,yield);
+
+            handler.processor(req,res,stream_socket,[&](){
+
+                // this is the lambda function which triggers when there has to be a change to a socket
+
+            });
+//make the write to the endpoint address 
+            boost::beast::http::async_write()
+
+        }catch(std::exception& e){
+
+            cout<<"error with session: "<<e.what()<<endl;
+
+        }
+
+    }
+
+};      
