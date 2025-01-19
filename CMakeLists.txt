@@ -7,7 +7,9 @@ set(CMAKE_TOOLCHAIN_FILE /home/aj/code/Berita/vcpkg/scripts/buildsystems/vcpkg.c
 project(Game_server VERSION 1.0)
 
 add_executable(main main.cpp)
-target_include_directories(main PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/dependencies)
+target_include_directories(main PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/core)
+target_include_directories(main PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/routes)
+target_include_directories(main PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/middleware)
 
 find_package(Boost)
 target_include_directories(main PUBLIC ${Boost_INCLUDE_DIR})

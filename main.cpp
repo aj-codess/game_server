@@ -29,10 +29,10 @@ int main(){
 
     domain_dcl domain={
         "localhost",
-        "5000"
+        "8080"
     };
 
     override server_init(context,domain);
 
     return 0;
-}
+};

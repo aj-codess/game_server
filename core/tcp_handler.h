@@ -1,15 +1,20 @@
 #pragma once
 
+#include <iostream>
+#include <string>
+
 #include <boost/asio.hpp>
 #include <boost/beast.hpp>
 
-#include <iostream>
-#include <string>
+#include <login_routes.h>
+#include <auth_check.h>
 
 using namespace std;
 
 class tcp_handler{
     private:
+    auth auth_handler;
+    login_routes login_handler;
 
     public:
     tcp_handler()=default;

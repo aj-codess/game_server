@@ -151,18 +151,38 @@ void server_handler::commu_handler_init(std::shared_ptr<boost::asio::ip::tcp::so
 
             handler.processor(req,res,stream_socket,[&](){
 
-                // this is the lambda function which triggers when there has to be a change to a socket
+                // this is the lambda function which triggers when there has to be a change to a real-time socket
 
             });
-//make the write to the endpoint address 
-            boost::beast::http::async_write()
+
+            boost::beast::http::async_write(stream_socket,res,yield);
+
+            if(res.need_eof()){
+
+                boost::beast::error_code shutdown_ec;
+
+                stream_socket.socket().shutdown(boost::asio::ip::tcp::socket::shutdown_send,shutdown_ec);
+
+                client_is_off=true;
+
+                if(shutdown_ec){
+
+                    cout<<"error shutting down: "<<shutdown_ec.message()<<endl;
+
+                };
+
+            };
 
         }catch(std::exception& e){
 
             cout<<"error with session: "<<e.what()<<endl;
 
-        }
+        };
 
-    }
+        if(client_is_off==true){
+            break;
+        };
+
+    };
 
 };      
